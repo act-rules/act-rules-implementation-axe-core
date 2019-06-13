@@ -1,0 +1,19 @@
+{
+  "name": "act-rules-implementation-axe-core",
+  "version": "1.0.0",
+  "description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/act-rules/act-rules-implementation-axe-core.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/act-rules/act-rules-implementation-axe-core/issues"
+  },
+  "homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme"
+}
