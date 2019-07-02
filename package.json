@@ -4,6 +4,8 @@
   "description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
   "main": "index.js",
   "scripts": {
+    "prebuild": "npm install",
+    "build": "node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/act-rules/act-rules-implementation-axe-core/issues"
   },
-  "homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme"
+  "homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme",
+  "dependencies": {
+    "assert": "^2.0.0",
+    "axe-puppeteer": "^1.0.0",
+    "commander": "^2.20.0",
+    "puppeteer": "^1.18.0",
+    "static-server": "^2.2.1"
+  }
 }
