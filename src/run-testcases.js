@@ -1,29 +1,56 @@
-const StaticServer = require('static-server')
+const { readFileSync } = require('fs')
+const staticServer = require('static-server')
+
 const runRuleTests = require('./run-rule-tests')
 
-const runTestcases = async (options, ruleTests, pageRunner) => {
-  const { port = 1338, start = 0, size = undefined, testsDir } = options
+const groupedTestcases = (testsJson, ruleId) => {
+  const { testcases } = JSON.parse(readFileSync(testsJson, { encoding: 'utf-8' }))
+  if (!testcases) {
+    throw new Error(`Given testcases JSON does not contain tests`)
+  }
 
-  const server = new StaticServer({
+  const groupedTestcasesByRuleId = testcases.reduce(
+    (out, tc) => {
+      if (!out[tc.ruleId]) {
+        out[tc.ruleId] = []
+      }
+      out[tc.ruleId].push(tc)
+      return out
+    }, {})
+
+  if (ruleId) {
+    return [groupedTestcasesByRuleId[ruleId]]
+  }
+
+  return Object.values(groupedTestcasesByRuleId)
+}
+
+const runTestcases = async (options, pageRunner) => {
+  const { port = 1338, testsDir, testsJson, ruleId } = options
+
+  const tests = groupedTestcases(testsJson, ruleId)
+  console.log(tests);
+
+  const server = new staticServer({
     rootPath: testsDir,
     port
   })
 
   server.start()
 
-  let i = 0;
   const results = []
-  const tests = ruleTests.slice(start, start + size || undefined)
 
   for (let ruleTest of tests) {
-    const testIndex = (start + (i + 1));
     const { ruleName, ruleId } = ruleTest[0]
-    console.log(`testing #${testIndex}: ${ruleName} (${ruleId})`)
+
+    console.log(`Testing: ${ruleName} (${ruleId})`)
     process.stdout.write('  ')
 
     try {
       const ruleResults = await runRuleTests(pageRunner, ruleTest, port)
-      results.push(...ruleResults)
+      results.push(
+        ...ruleResults
+      )
     } catch (e) {
       console.error(e.message, e.stack)
     }

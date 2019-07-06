@@ -1,33 +1,18 @@
-const { readFileSync, writeFile } = require('fs')
+const { writeFile } = require('fs')
 const path = require('path')
 const util = require('util')
 const createFile = util.promisify(writeFile)
-const program = require('commander')
 const puppeteer = require('puppeteer')
-const getActTestcasesGroupedByRules = require('./get-act-testcases-grouped-by-rules')
+const program = require('commander')
+
 const runTestcases = require('./run-testcases')
 const axeRunner = require('./axe-runner')
 const { concatReport } = require('./axe-reporter-earl')
 
 /**
- * Setup
- */
-const args = process.argv.slice(2)
-const start = +args[0] || 0
-const size = +args[1] || (start ? 1 : undefined)
-
-/**
  * Init
  */
-const init = async ({ testsJson, testsDir }) => {
-  const options = { start, size, testsDir }
-
-  /**
-   * Get testcases of ACT Rules
-   */
-  const { testcases } = JSON.parse(readFileSync(testsJson, { encoding: 'utf-8' }))
-  const testcasesGroups = getActTestcasesGroupedByRules(testcases)
-
+const init = async (options) => {
   /**
    * Start `puppeteer`
    */
@@ -35,9 +20,7 @@ const init = async ({ testsJson, testsDir }) => {
   const page = await browser.newPage()
   await page.setBypassCSP(true)
 
-  const testResults = await runTestcases(options, testcasesGroups, (args) => {
-    return axeRunner(page, args)
-  })
+  const testResults = await runTestcases(options, (args) => axeRunner(page, args))
 
   await page.close()
   await browser.close()
@@ -54,14 +37,9 @@ const init = async ({ testsJson, testsDir }) => {
  * Parse `args`
  */
 program
-  .option(
-    '-t, --testsJson <testsJson>',
-    'Path to JSON file containing all ACT Rules testcases'
-  )
-  .option(
-    '-d, --testsDir <testsDir>',
-    'Directory containing ACR testcases assets and files'
-  )
+  .option('-t, --testsJson <testsJson>', 'Path to JSON file containing all ACT Rules testcases')
+  .option('-d, --testsDir <testsDir>', 'Directory containing ACR testcases assets and files')
+  .option('-r, --ruleId [ruleId]', 'Rule Id of the testcases to execute')
   .parse(process.argv)
 
 /**

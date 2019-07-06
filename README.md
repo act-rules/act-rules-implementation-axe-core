@@ -4,10 +4,14 @@ Implementation [report](./report.json) for [ACT Rules](https://github.com/act-ru
 
 ## Usage
 
-TODO
-
-
+TODO (document all options)
 
 ## Regenerating a report
 
 TODO
+
+
+## TODO:
+- when actual vs expected are different how to report to me and wilco
+- complete flag is wrong
+  - 
