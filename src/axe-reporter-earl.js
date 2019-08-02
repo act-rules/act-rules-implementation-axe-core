@@ -66,7 +66,8 @@ module.exports.axeReporterEarl = function axeReporterEarl({
 
 module.exports.earlUntested = function earlUntested({ url, version }) {
   const untestedAssertion = earlAssertion({
-    source: url, version
+    source: url,
+    version
   })
   return {
     "@context": context,
@@ -82,7 +83,8 @@ module.exports.concatReport = function concatReport(testResults) {
     , [])
 
   return {
-    '@context': testResults[0]['@context'],
+    "@context": context,
+    // '@context': testResults[0]['@context'],
     '@graph': graphs
   }
 }

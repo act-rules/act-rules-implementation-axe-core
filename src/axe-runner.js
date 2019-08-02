@@ -8,6 +8,13 @@ const ignores = [
   'Meta-refresh no delay', // TODO: Figure out why these TCs throw
 ]
 
+/* Reject with a message after a certain time */
+function timeoutReject(t, msg) {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(msg)), t)
+  })
+}
+
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
  */
@@ -15,7 +22,8 @@ const axeRunner = async (page, args) => {
   const {
     url = '',
     ruleSuccessCriterion: tags,
-    ruleName
+    ruleName,
+    getSourceUrl
   } = args
 
   // Work out if axe knows how to test this page
@@ -45,7 +53,10 @@ const axeRunner = async (page, args) => {
     const raw = await axeRunner.analyze()
     return axeReporterEarl({
       raw,
-      env: { url, version }
+      env: {
+        url: getSourceUrl(url),
+        version
+      }
     })
   }
 
@@ -58,10 +69,3 @@ const axeRunner = async (page, args) => {
 }
 
 module.exports = axeRunner;
-
-/* Reject with a message after a certain time */
-function timeoutReject(t, msg) {
-  return new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(msg)), t)
-  })
-}

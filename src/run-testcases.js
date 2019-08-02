@@ -1,6 +1,5 @@
 const { readFileSync } = require('fs')
 const staticServer = require('static-server')
-
 const runRuleTests = require('./run-rule-tests')
 
 const groupedTestcases = (testsJson, ruleId) => {
@@ -26,11 +25,9 @@ const groupedTestcases = (testsJson, ruleId) => {
 }
 
 const runTestcases = async (options, pageRunner) => {
-  const { port = 1338, testsDir, testsJson, ruleId } = options
+  const { port = 1338, testsDir, testsJson, ruleId, siteUrl } = options
 
   const tests = groupedTestcases(testsJson, ruleId)
-  console.log(tests);
-
   const server = new staticServer({
     rootPath: testsDir,
     port
@@ -39,7 +36,6 @@ const runTestcases = async (options, pageRunner) => {
   server.start()
 
   const results = []
-
   for (let ruleTest of tests) {
     const { ruleName, ruleId } = ruleTest[0]
 
@@ -47,17 +43,17 @@ const runTestcases = async (options, pageRunner) => {
     process.stdout.write('  ')
 
     try {
-      const ruleResults = await runRuleTests(pageRunner, ruleTest, port)
-      results.push(
-        ...ruleResults
-      )
+      const ruleResults = await runRuleTests(pageRunner, ruleTest, port, siteUrl)
+      if (ruleResults && ruleResults.length > 0) {
+        results.push(
+          ...ruleResults
+        )
+      }
     } catch (e) {
       console.error(e.message, e.stack)
     }
   }
-
   server.stop()
-
   return results
 }
 

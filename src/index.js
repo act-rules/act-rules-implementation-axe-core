@@ -25,8 +25,6 @@ const init = async (options) => {
   await page.close()
   await browser.close()
 
-  console.log(testResults);
-
   // Save EARL
   const earlResults = concatReport(testResults)
   const earlPath = path.resolve('./report.json')
@@ -40,6 +38,7 @@ program
   .option('-t, --testsJson <testsJson>', 'Path to JSON file containing all ACT Rules testcases')
   .option('-d, --testsDir <testsDir>', 'Directory containing ACR testcases assets and files')
   .option('-r, --ruleId [ruleId]', 'Rule Id of the testcases to execute')
+  .option('-s, --siteUrl [siteUrl]', 'Url of the ACT Rules site' )
   .parse(process.argv)
 
 /**
