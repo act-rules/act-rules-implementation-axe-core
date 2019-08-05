@@ -10,8 +10,7 @@ TODO (document all options)
 
 TODO
 
-
 ## TODO:
+
 - when actual vs expected are different how to report to me and wilco
-- complete flag is wrong
-  - 
+- ## complete flag is wrong
