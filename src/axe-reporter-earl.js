@@ -83,11 +83,10 @@ function concatReport(testResults) {
 	// Flatten the graphs into a single array
 	const graphs = testResults.reduce((graph, result) => {
 		return graph.concat(result['@graph'])
-	}, [])
+  }, [])
 
 	return {
 		'@context': context,
-		// '@context': testResults[0]['@context'],
 		'@graph': graphs,
 	}
 }
