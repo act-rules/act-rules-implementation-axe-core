@@ -24,14 +24,14 @@ describe(`group-testcases`, () => {
     expect(url.includes(ruleId))
   })
 
-  const [ruleIdResults] = groupedTestcases(__dirname + '/data/testcases.json', '6cfa84')
-  test(`get testcases that are grouped by specified 'ruleId'`, () => {
+  const [ruleIdResults] = groupedTestcases(__dirname + '/data/testcases.json', '73f2c2')
+  test(`get testcases that are grouped by specified ruleId - 73f2c2 (Autocomplete valid)`, () => {
     expect(ruleIdResults).toBeDefined();
     expect(ruleIdResults.length).toBeGreaterThan(1);
   })
 
   test.each(ruleIdResults)
-    ('has only testcases of the rule `6cfa84`', (ruleTestcases) => {
+    ('has only testcases of the rule "Autocomplete valid (73f2c2)"', (ruleTestcases) => {
       const { url, ruleId } = ruleTestcases
       expect(url.includes(ruleId))
     })

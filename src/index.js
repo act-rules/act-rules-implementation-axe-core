@@ -1,3 +1,4 @@
+const assert = require('assert')
 const { writeFile } = require('fs')
 const path = require('path')
 const util = require('util')
@@ -12,7 +13,16 @@ const { concatReport } = require('./axe-reporter-earl')
 /**
  * Init
  */
-const init = async (options) => {
+const init = async program => {
+
+  const { testsJson, testsDir, siteUrl } = program
+  /**
+   * validate options
+   */
+  assert(testsJson, '`testsJson` is required')
+  assert(testsDir, '`testsDir` is required')
+  assert(siteUrl, '`siteUrl` is required')
+
   /**
    * Start `puppeteer`
    */
@@ -20,7 +30,7 @@ const init = async (options) => {
   const page = await browser.newPage()
   await page.setBypassCSP(true)
 
-  const testResults = await runTestcases(options, (args) => axeRunner(page, args))
+  const testResults = await runTestcases(program, (args) => axeRunner(page, args))
 
   await page.close()
   await browser.close()
@@ -37,8 +47,9 @@ const init = async (options) => {
 program
   .option('-t, --testsJson <testsJson>', 'Path to JSON file containing all ACT Rules testcases')
   .option('-d, --testsDir <testsDir>', 'Directory containing ACR testcases assets and files')
-  .option('-r, --ruleId [ruleId]', 'Rule Id of the testcases to execute')
-  .option('-s, --siteUrl [siteUrl]', 'Url of the ACT Rules site' )
+  .option('-s, --siteUrl <siteUrl>', 'Url of the ACT Rules site')
+  .option('-r, --ruleId [ruleId]', '(Optional) Rule Id of the testcases to execute')
+  
   .parse(process.argv)
 
 /**
