@@ -4,7 +4,7 @@ const groupedTestcases = require('./group-testcases')
 const runRuleTests = require('./run-rule-tests')
 
 const runTestcases = async (options, pageRunner) => {
-	const { port = 1338, testsDir, testsJson, ruleId = undefined, siteUrl } = options
+	const { port = 1339, testsDir, testsJson, ruleId = undefined, siteUrl } = options
 
 	const tests = groupedTestcases(testsJson, ruleId)
 

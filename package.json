@@ -36,6 +36,9 @@
 		"bail": true,
 		"setupFilesAfterEnv": [
 			"jest-extended"
+		],
+		"testPathIgnorePatterns": [
+			"<rootDir>/src/__tests__/utils.js"
 		]
 	}
 }

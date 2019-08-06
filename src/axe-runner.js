@@ -27,8 +27,12 @@ const axeRunner = async (page, args) => {
 	}
 
 	// Get the page and make sure it loads correctly
-	await page.goto(url)
-	const html = await page.$eval(':root', e => e.outerHTML)
+	console.log(url)
+
+	await Promise.race([page.goto(url), page.waitFor('body')])
+
+	const html = await page.$eval('html', e => e.outerHTML)
+
 	if (html.includes('Not Found')) {
 		console.log(`Not Found ${url}`)
 		return earlUntested({ url, version })
@@ -42,10 +46,6 @@ const axeRunner = async (page, args) => {
 	/* Run axe and return EARL */
 	async function analyze() {
 		const raw = await axeRunner.analyze()
-
-		console.log(JSON.stringify(raw))
-
-		console.log('========')
 		return axeReporterEarl({
 			raw,
 			env: {
