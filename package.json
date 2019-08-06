@@ -1,19 +1,44 @@
 {
-  "name": "act-rules-implementation-axe-core",
-  "version": "1.0.0",
-  "description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/act-rules/act-rules-implementation-axe-core.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/act-rules/act-rules-implementation-axe-core/issues"
-  },
-  "homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme"
+	"name": "act-rules-implementation-axe-core",
+	"version": "1.0.0",
+	"description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
+	"main": "index.js",
+	"scripts": {
+		"prebuild": "npm install",
+		"build": "node ./src/index.js",
+		"test": "jest --coverage",
+		"format": "prettier --write *.{json,md,js} 'src/**/*.{json,md,js}'"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/act-rules/act-rules-implementation-axe-core.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/act-rules/act-rules-implementation-axe-core/issues"
+	},
+	"homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme",
+	"dependencies": {
+		"assert": "^2.0.0",
+		"axe-puppeteer": "^1.0.0",
+		"commander": "^2.20.0",
+		"puppeteer": "^1.18.0",
+		"static-server": "^2.2.1"
+	},
+	"devDependencies": {
+		"jest": "^24.8.0",
+		"jest-extended": "^0.11.2",
+		"prettier": "^1.18.2"
+	},
+	"jest": {
+		"verbose": true,
+		"bail": true,
+		"setupFilesAfterEnv": [
+			"jest-extended"
+		],
+		"testPathIgnorePatterns": [
+			"<rootDir>/src/__tests__/utils.js"
+		]
+	}
 }
