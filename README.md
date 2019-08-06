@@ -4,13 +4,15 @@ Implementation [report](./report.json) for [ACT Rules](https://github.com/act-ru
 
 ## Usage
 
-TODO (document all options)
+```sh
+node src/index.js 
+  --testsJson MY_TESTS.json 
+  --testsDir MY_TESTS 
+  --siteUrl MY_SITE_URL
+```
 
-## Regenerating a report
-
-TODO
-
-## TODO:
-
-- when actual vs expected are different how to report to me and wilco
-- ## complete flag is wrong
+| Options | Description |
+|---|---|
+| testsJson | JSON file containting [ACT Rules testcases](https://act-rules.github.io/testcases.json) |
+| testsDir | Directory containing test files and assets |
+| siteUrl | URL prefix of the testcased, used to resolve assertion source correctly |
