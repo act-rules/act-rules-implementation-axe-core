@@ -27,8 +27,6 @@ const axeRunner = async (page, args) => {
 	}
 
 	// Get the page and make sure it loads correctly
-	console.log(url)
-
 	await Promise.race([page.goto(url), page.waitFor('body')])
 
 	const html = await page.$eval('html', e => e.outerHTML)
