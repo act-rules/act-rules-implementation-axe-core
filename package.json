@@ -22,7 +22,7 @@
 		"assert": "^2.0.0",
 		"axe-puppeteer": "next",
 		"commander": "^2.20.0",
-		"puppeteer": "^1.18.0",
+		"puppeteer": "next",
 		"static-server": "^2.2.1"
 	},
 	"devDependencies": {
