@@ -79,6 +79,20 @@ function earlUntested({ url, version }) {
 	}
 }
 
+function earlInapplicable({ url, version }) {
+	const inapplicableAssertion = earlAssertion({
+		outcome: 'inapplicable',
+		// ruleId: ruleResult.id,
+		source: url,
+		version,
+	})
+
+	return {
+		'@context': context,
+		'@graph': [inapplicableAssertion],
+	}
+}
+
 function concatReport(testResults) {
 	// Flatten the graphs into a single array
 	const graphs = testResults.reduce((graph, result) => {
@@ -94,5 +108,6 @@ function concatReport(testResults) {
 module.exports = {
 	axeReporterEarl,
 	earlUntested,
+	earlInapplicable,
 	concatReport,
 }

@@ -1,6 +1,6 @@
 const { readFileSync } = require('fs')
 const { AxePuppeteer } = require('axe-puppeteer')
-const { axeReporterEarl, earlUntested } = require('./axe-reporter-earl')
+const { axeReporterEarl, earlUntested, earlInapplicable } = require('./axe-reporter-earl')
 const { version } = require('axe-core')
 const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
 
@@ -23,7 +23,7 @@ const axeRunner = async (page, args) => {
 
 	// Work out if axe knows how to test this page
 	if (ignores.includes(ruleName) || url.substr(-4) === '.svg' || tags.length === 0) {
-		return earlUntested({ url, version })
+		return earlInapplicable({ url, version })
 	}
 
 	// Get the page and make sure it loads correctly
