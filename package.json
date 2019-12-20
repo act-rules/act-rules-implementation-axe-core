@@ -20,6 +20,7 @@
 	"homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme",
 	"dependencies": {
 		"assert": "^2.0.0",
+		"axe-core": "github:dequelabs/axe-core#wai-tools",
 		"axe-puppeteer": "latest",
 		"commander": "^2.20.0",
 		"puppeteer": "latest",
