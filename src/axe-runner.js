@@ -1,11 +1,17 @@
 const { readFileSync } = require('fs')
+const path = require('path')
 const { AxePuppeteer } = require('axe-puppeteer')
 const { axeReporterEarl, earlUntested } = require('./axe-reporter-earl')
 const { version } = require('axe-core')
 const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
 
-const ignores = [
+const ignoreRules = [
 	'Meta-refresh no delay', // TODO: Figure out why these TCs throw
+]
+
+const ignoreFileTypes = [
+	'svg',
+	'xml'
 ]
 
 /* Reject with a message after a certain time */
@@ -22,7 +28,16 @@ const axeRunner = async (page, args) => {
 	const { url = '', ruleSuccessCriterion: tags, ruleName, getSourceUrl } = args
 
 	// Work out if axe knows how to test this page
-	if (ignores.includes(ruleName) || url.substr(-4) === '.svg' || tags.length === 0) {
+	if (ignoreRules.includes(ruleName)) {
+		return earlUntested({ url, version })
+	}
+
+	const extn = getFileExtension(url)
+	if (extn && ignoreFileTypes.includes(extn)) {
+		return earlUntested({ url, version })
+	}
+
+	if (tags.length === 0) {
 		return earlUntested({ url, version })
 	}
 
@@ -62,3 +77,13 @@ const axeRunner = async (page, args) => {
 }
 
 module.exports = axeRunner
+
+
+/**
+ * Get extension from path
+ * @param {String} str string of file path or url
+ */
+function getFileExtension(str) {
+	const filename = path.basename(str);
+	return path.extname(filename).slice(1);
+}
