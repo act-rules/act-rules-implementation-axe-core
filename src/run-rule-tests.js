@@ -16,9 +16,12 @@ const runRuleTests = async (pageRunner, testcases, port, siteUrl) => {
 			.map(key => key.split(':').pop())
 			.map(sc => 'wcag' + sc.replace(/\./g, ''))
 
+		const { ruleId, ruleName, relativePath } = tc
+
 		const results = await pageRunner({
-			url: `http://127.0.0.1:${port}/${tc.relativePath}`,
-			ruleName: tc.ruleName,
+			ruleId,
+			ruleName,
+			url: `http://127.0.0.1:${port}/${relativePath}`,
 			ruleSuccessCriterion: ruleScs,
 			getSourceUrl: assertionUrl => {
 				if (!siteUrl) {
