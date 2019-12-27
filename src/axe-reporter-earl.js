@@ -1,36 +1,23 @@
 const context = require('./context')
 
-const axeTypes = ['passes', 'incomplete', 'inapplicable', 'violations']
-
+const axeTypes = [
+	'passes',
+	'incomplete',
+	'inapplicable',
+	'violations'
+]
 const outcomeMap = {
 	passes: 'passed',
 	violations: 'failed',
 	incomplete: 'cantTell',
 }
+const ignoreRulesIds = [`bc659a`]
+const inapplicableFileExtnensions = [`js`, `xml`, `svg`]
 
-function earlAssertion({ source, version, ruleId, mode = 'automatic', outcome = 'untested' }) {
-	const assertion = {
-		'@type': 'Assertion',
-		mode: `earl:${mode}`,
-		subject: { '@type': ['earl:TestSubject', 'sch:WebPage'], source },
-		assertedBy: `https://github.com/dequelabs/axe-core/releases/tag/${version}`,
-		result: {
-			'@type': 'TestResult',
-			outcome: `earl:${outcome}`,
-		},
-	}
-
-	if (ruleId) {
-		const minor = version.match(/[0-9]+\.[0-9]+/)[0]
-		assertion.test = {
-			'@type': 'TestCase',
-			title: ruleId,
-			'@id': `https://dequeuniversity.com/rules/axe/${minor}/${ruleId}?application=axeAPI`,
-		}
-	}
-	return assertion
-}
-
+/**
+ * @method axeReporterEarl
+ * @param {Object} param
+ */
 function axeReporterEarl({ raw: ruleResults = [], env = {} }) {
 	const { url, version } = env
 	const graph = []
@@ -79,6 +66,33 @@ function earlUntested({ url, version }) {
 	}
 }
 
+function earlAssertion({ source, version, ruleId, mode = 'automatic', outcome = 'untested' }) {
+	const assertion = {
+		'@type': 'Assertion',
+		mode: `earl:${mode}`,
+		subject: { '@type': ['earl:TestSubject', 'sch:WebPage'], source },
+		assertedBy: `https://github.com/dequelabs/axe-core/releases/tag/${version}`,
+		result: {
+			'@type': 'TestResult',
+			outcome: `earl:${outcome}`,
+		},
+	}
+
+	if (ruleId) {
+		const minor = version.match(/[0-9]+\.[0-9]+/)[0]
+		assertion.test = {
+			'@type': 'TestCase',
+			title: ruleId,
+			'@id': `https://dequeuniversity.com/rules/axe/${minor}/${ruleId}?application=axeAPI`,
+		}
+	}
+	return assertion
+}
+
+/**
+ * Concat multiple assertions
+ * @param {Object} testResults 
+ */
 function concatReport(testResults) {
 	// Flatten the graphs into a single array
 	const graphs = testResults.reduce((graph, result) => {
@@ -92,6 +106,8 @@ function concatReport(testResults) {
 }
 
 module.exports = {
+	inapplicableFileExtnensions,
+	ignoreRulesIds,
 	axeReporterEarl,
 	earlUntested,
 	concatReport,

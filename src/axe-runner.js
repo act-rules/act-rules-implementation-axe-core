@@ -1,12 +1,9 @@
 const { readFileSync } = require('fs')
 const path = require('path')
 const { AxePuppeteer } = require('axe-puppeteer')
-const { axeReporterEarl, earlUntested, earlInapplicable } = require('./axe-reporter-earl')
-const { version } = require('axe-core')
+const { axeReporterEarl, earlUntested, earlInapplicable, inapplicableFileExtnensions, ignoreRulesIds } = require('./axe-reporter-earl')
+const axe = require('axe-core')
 const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
-
-const ignoreRulesIds = ['bc659a']
-const ignoreFileTypes = ['js']
 
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
@@ -14,26 +11,26 @@ const ignoreFileTypes = ['js']
 const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags, ruleId, getSourceUrl }) => {
 	// check if running axe should be ignored
 	const extn = getFileExtension(url)
-	if (ignoreRulesIds.includes(ruleId) || tags.length === 0 || (extn && ignoreFileTypes.includes(extn))) {
-		return earlUntested({ url: getSourceUrl(url), version })
+	const env = {
+		url: getSourceUrl(url),
+		version: axe.version
+	}
+
+	if (ignoreRulesIds.includes(ruleId) || tags.length === 0) {
+		return earlUntested(env)
 	}
 
 	// Get the page and make sure it loads correctly
 	await Promise.race([page.goto(url), page.waitFor('body')])
 
 	// if given page is of type `html`, ensure it loaded
-	if (extn && extn === `html`) {
+	if (extn === `html`) {
 		const html = await page.$eval('html', e => e.outerHTML)
 		if (html.includes('Not Found')) {
 			console.log(`Not Found ${url}`)
-			return earlUntested({ url: getSourceUrl(url), version })
+			return earlUntested(env)
 		}
 	}
-
-	// Setup axe-puppeteer with the correct SC
-	const axeRunner = new AxePuppeteer(page, axeSource)
-	axeRunner.options({ reporter: 'raw' })
-	axeRunner.withTags(tags)
 
 	// return
 	return Promise.race([
@@ -43,13 +40,30 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags, ruleId, g
 
 	/* Run axe and return EARL */
 	async function analyze() {
-		return axeReporterEarl({
-			raw: await axeRunner.analyze(),
-			env: {
-				url: getSourceUrl(url),
-				version,
-			},
-		})
+		try {
+			let raw
+
+			// check for inapplicable file extensions
+			if (inapplicableFileExtnensions.includes(extn)) {
+				const axeRules = axe.getRules(tags) || []
+				raw = axeRules.map(({ ruleId }) => {
+					return {
+						result: `inapplicable`,
+						id: ruleId
+					}
+				})
+			} else {
+				// Setup axe-puppeteer with the correct SC
+				const axePup = new AxePuppeteer(page, axeSource)
+				axePup.options({ reporter: 'raw' })
+				axePup.withTags(tags)
+				raw = await axePup.analyze()
+			}
+
+			return axeReporterEarl({ raw, env })
+		} catch (error) {
+			console.error(error)
+		}
 	}
 }
 
@@ -70,5 +84,6 @@ function timeoutReject(t, msg) {
  */
 function getFileExtension(str) {
 	const filename = path.basename(str);
-	return path.extname(filename).slice(1);
+	const extn = path.extname(filename).slice(1)
+	return extn || ""
 }

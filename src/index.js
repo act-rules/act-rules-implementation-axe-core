@@ -11,9 +11,29 @@ const axeRunner = require('./axe-runner')
 const { concatReport } = require('./axe-reporter-earl')
 
 /**
+ * Parse `args`
+ */
+program
+	.option('-t, --testsJson <testsJson>', 'Path to JSON file containing all ACT Rules testcases')
+	.option('-d, --testsDir <testsDir>', 'Directory containing ACR testcases assets and files')
+	.option('-s, --siteUrl <siteUrl>', 'Url of the ACT Rules site')
+	.option('-r, --ruleId [ruleId]', '(Optional) Rule Id of the testcases to execute')
+	.parse(process.argv)
+
+/**
+ * Invoke
+ */
+init(program)
+	.then(() => console.log('Axe report generated for ACT Rules.'))
+	.catch(e => {
+		console.error(e)
+		process.exit(1)
+	})
+
+/**
  * Init
  */
-const init = async program => {
+async function init(program) {
 	const { testsJson, testsDir, siteUrl } = program
 	/**
 	 * validate options
@@ -39,24 +59,3 @@ const init = async program => {
 	const earlPath = path.resolve('./report.json')
 	await createFile(earlPath, JSON.stringify(earlResults, null, 2), 'utf-8')
 }
-
-/**
- * Parse `args`
- */
-program
-	.option('-t, --testsJson <testsJson>', 'Path to JSON file containing all ACT Rules testcases')
-	.option('-d, --testsDir <testsDir>', 'Directory containing ACR testcases assets and files')
-	.option('-s, --siteUrl <siteUrl>', 'Url of the ACT Rules site')
-	.option('-r, --ruleId [ruleId]', '(Optional) Rule Id of the testcases to execute')
-
-	.parse(process.argv)
-
-/**
- * Invoke
- */
-init(program)
-	.then(() => console.log('Axe report generated for ACT Rules.'))
-	.catch(e => {
-		console.error(e)
-		process.exit(1)
-	})
