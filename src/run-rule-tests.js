@@ -11,14 +11,20 @@ const runRuleTests = async (pageRunner, testcases, port, siteUrl) => {
 			return
 		}
 
-		const ruleScs = Object.keys(ruleAccessibilityRequirements)
-			.filter(key => key.includes(`wcag`))
-			.map(key => key.split(':').pop())
-			.map(sc => 'wcag' + sc.replace(/\./g, ''))
+		const wcagAccReqs = Object.keys(ruleAccessibilityRequirements).filter(key => {
+			return key.includes('wcag20') || key.includes('wcag21')
+		})
 
+		const ruleScs = wcagAccReqs.map(key => key.split(':').pop()).map(sc => 'wcag' + sc.replace(/\./g, ''))
+		if (!ruleScs || !ruleScs.length) {
+			continue
+		}
+
+		const { ruleId, ruleName, relativePath } = tc
 		const results = await pageRunner({
-			url: `http://127.0.0.1:${port}/${tc.relativePath}`,
-			ruleName: tc.ruleName,
+			ruleId,
+			ruleName,
+			url: `http://127.0.0.1:${port}/${relativePath}`,
 			ruleSuccessCriterion: ruleScs,
 			getSourceUrl: assertionUrl => {
 				if (!siteUrl) {

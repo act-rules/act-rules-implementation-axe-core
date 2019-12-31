@@ -4,9 +4,11 @@
 	"description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
 	"main": "index.js",
 	"scripts": {
+		"prebuild": "npm --prefix './node_modules/axe-core/' install && npm --prefix './node_modules/axe-core/' run build",
 		"build": "node ./src/index.js",
 		"test": "jest --coverage",
-		"format": "prettier --write *.{json,md,js} 'src/**/*.{json,md,js}'"
+		"format": "prettier --write *.{json,md,js} 'src/**/*.{json,md,js}'",
+		"tmp": "node src/index.js --ruleId 5b7ae0 --testsJson ${PWD}'/rules-testcases/testcases.json' --testsDir ${PWD}'/rules-testcases' --siteUrl https://act-rules.github.io"
 	},
 	"repository": {
 		"type": "git",
@@ -20,6 +22,7 @@
 	"homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme",
 	"dependencies": {
 		"assert": "^2.0.0",
+		"axe-core": "github:dequelabs/axe-core#wai-tools",
 		"axe-puppeteer": "latest",
 		"commander": "^2.20.0",
 		"puppeteer": "latest",
