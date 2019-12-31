@@ -8,7 +8,7 @@ const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
  */
-const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags, ruleId, getSourceUrl }) => {
+const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], ruleId, getSourceUrl }) => {
 	// check if running axe should be ignored
 	const extn = getFileExtension(url)
 	const env = {
@@ -35,29 +35,27 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags, ruleId, g
 	// return
 	return Promise.race([
 		analyze(), // Run axe to completion
-		timeoutReject(5000, `Timeout for page ${url}`), // or, timeout after 5s
+		timeoutReject(50000, `Timeout for page ${url}`), // or, timeout after 5s
 	])
 
 	/* Run axe and return EARL */
 	async function analyze() {
+
 		try {
 			let raw
+			const axeRules = axe.getRules(tags) || []
+			const axeRulesIds = axeRules.map(({ ruleId }) => ruleId)
 
 			// check for inapplicable file extensions
 			if (inapplicableFileExtnensions.includes(extn)) {
-				const axeRules = axe.getRules(tags) || []
-				raw = axeRules.map(({ ruleId }) => {
-					return {
-						result: `inapplicable`,
-						id: ruleId
-					}
+				raw = axeRulesIds.map(ruleId => {
+					return { result: `inapplicable`, id: ruleId }
 				})
 			} else {
 				// Setup axe-puppeteer with the correct SC
-				const axePup = new AxePuppeteer(page, axeSource)
-				axePup.options({ reporter: 'raw' })
-				axePup.withTags(tags)
-				raw = await axePup.analyze()
+				raw = await new AxePuppeteer(page, axeSource)
+					.options({ runOnly: { type: 'rule', values: axeRulesIds }, reporter: 'raw' })
+					.analyze()
 			}
 
 			return axeReporterEarl({ raw, env })
