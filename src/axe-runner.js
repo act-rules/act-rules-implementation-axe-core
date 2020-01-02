@@ -16,12 +16,18 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], rule
 		version: axe.version
 	}
 
-	if (ignoreRulesIds.includes(ruleId) || tags.length === 0) {
+	if (ignoreRulesIds.includes(ruleId) || !tags.length) {
 		return earlUntested(env)
 	}
 
+	const axeRules = axe.getRules(tags) || []
+	if (!axeRules.length) {
+		return earlUntested(env)
+	}
+
+
 	// Get the page and make sure it loads correctly
-	await Promise.race([page.goto(url), page.waitFor('body')])
+	await page.goto(url, { waitUntil: 'networkidle0' });
 
 	// if given page is of type `html`, ensure it loaded
 	if (extn === `html`) {
@@ -40,10 +46,8 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], rule
 
 	/* Run axe and return EARL */
 	async function analyze() {
-
 		try {
 			let raw
-			const axeRules = axe.getRules(tags) || []
 			const axeRulesIds = axeRules.map(({ ruleId }) => ruleId)
 
 			// check for inapplicable file extensions
@@ -57,7 +61,6 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], rule
 					.options({ runOnly: { type: 'rule', values: axeRulesIds }, reporter: 'raw' })
 					.analyze()
 			}
-
 			return axeReporterEarl({ raw, env })
 		} catch (error) {
 			console.error(error)
