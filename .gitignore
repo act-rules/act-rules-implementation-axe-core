@@ -1,11 +1,4 @@
-# jest coverage 
+# coverage 
 coverage
-
 # deps 
 node_modules
-
-# test cases of rules used for testing
-rules-testcases
-
-# ignore report.json
-report.json
