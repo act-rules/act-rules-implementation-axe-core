@@ -11,12 +11,12 @@ const runRuleTests = async (pageRunner, testcases, port, siteUrl) => {
 			return
 		}
 
-		const wcagAccReqs = Object.keys(ruleAccessibilityRequirements).filter(key => {
-			return key.includes('wcag20') || key.includes('wcag21')
-		})
+		const tags = getWcagScs(ruleAccessibilityRequirements)
+		if (hasAriaReqs(ruleAccessibilityRequirements)) {
+			tags.push(`cat.aria`)
+		}
 
-		const ruleScs = wcagAccReqs.map(key => key.split(':').pop()).map(sc => 'wcag' + sc.replace(/\./g, ''))
-		if (!ruleScs || !ruleScs.length) {
+		if (!tags || !tags.length) {
 			continue
 		}
 
@@ -25,7 +25,7 @@ const runRuleTests = async (pageRunner, testcases, port, siteUrl) => {
 			ruleId,
 			ruleName,
 			url: `http://127.0.0.1:${port}/${relativePath}`,
-			ruleSuccessCriterion: ruleScs,
+			ruleSuccessCriterion: tags,
 			getSourceUrl: assertionUrl => {
 				if (!siteUrl) {
 					return assertionUrl
@@ -44,3 +44,31 @@ const runRuleTests = async (pageRunner, testcases, port, siteUrl) => {
 }
 
 module.exports = runRuleTests
+
+
+/**
+ * Get an array of wcag success criterion tags
+ * 
+ * @param {Object} accReqs accessibility requirements
+ * @returns {String[]}
+ */
+function getWcagScs(accReqs) {
+	const wcagAccReqs = Object.keys(accReqs)
+		.filter(key => key.includes('wcag20') || key.includes('wcag21'))
+
+	const ruleScs = wcagAccReqs
+		.map(key => key.split(':').pop())
+		.map(sc => 'wcag' + sc.replace(/\./g, ''))
+
+	return ruleScs
+}
+
+/**
+ * Check if aria is a part of the accessibility requirements
+ * 
+ * @param {Object} accReqs accessibility requirements
+ * @returns {Boolean}
+ */
+function hasAriaReqs(accReqs) {
+	return Object.keys(accReqs).some(key => key.includes('aria'))
+}
