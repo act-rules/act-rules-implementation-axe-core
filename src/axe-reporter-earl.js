@@ -1,6 +1,5 @@
 const context = require('./context');
-const inapplicableFileExtensions = require('./config/inapplicable-file-extensions')
-const ignoreRulesIds = require('./config/ignore-rules-ids')
+const { ignoreRulesIds, inapplicableFileExtensions } = require('./config')
 
 /**
  * @method axeReporterEarl

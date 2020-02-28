@@ -4,7 +4,7 @@ const { AxePuppeteer } = require('axe-puppeteer')
 const { axeReporterEarl, earlUntested, inapplicableFileExtensions, ignoreRulesIds } = require('./axe-reporter-earl')
 const axe = require('axe-core')
 const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
-const rulesAxeOptions = require('./config/rules-axe-options')
+const rulesAxeOptions = require('./config')
 
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
