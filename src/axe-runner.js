@@ -1,9 +1,10 @@
 const { readFileSync } = require('fs')
 const path = require('path')
 const { AxePuppeteer } = require('axe-puppeteer')
-const { axeReporterEarl, earlUntested, earlInapplicable, inapplicableFileExtnensions, ignoreRulesIds } = require('./axe-reporter-earl')
+const { axeReporterEarl, earlUntested, inapplicableFileExtensions, ignoreRulesIds } = require('./axe-reporter-earl')
 const axe = require('axe-core')
 const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
+const rulesAxeOptions = require('./config/rules-axe-options')
 
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
@@ -51,14 +52,21 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], rule
 			const axeRulesIds = axeRules.map(({ ruleId }) => ruleId)
 
 			// check for inapplicable file extensions
-			if (inapplicableFileExtnensions.includes(extn)) {
+			if (inapplicableFileExtensions.includes(extn)) {
 				raw = axeRulesIds.map(ruleId => {
 					return { result: `inapplicable`, id: ruleId }
 				})
 			} else {
 				// Setup axe-puppeteer with the correct SC
 				raw = await new AxePuppeteer(page, axeSource)
-					.options({ runOnly: { type: 'rule', values: axeRulesIds }, reporter: 'raw' })
+					.options({
+						reporter: 'raw',
+						runOnly: {
+							type: 'rule',
+							values: axeRulesIds
+						},
+						...rulesAxeOptions[ruleId]
+					})
 					.analyze()
 			}
 			return axeReporterEarl({ raw, env })

@@ -1,27 +1,26 @@
-const context = require('./context')
-
-const axeTypes = [
-	'passes',
-	'incomplete',
-	'inapplicable',
-	'violations'
-]
-const outcomeMap = {
-	passes: 'passed',
-	violations: 'failed',
-	incomplete: 'cantTell',
-}
-const ignoreRulesIds = [`bc659a`]
-const inapplicableFileExtnensions = [`js`, `xml`, `svg`]
+const context = require('./context');
+const inapplicableFileExtensions = require('./config/inapplicable-file-extensions')
+const ignoreRulesIds = require('./config/ignore-rules-ids')
 
 /**
  * @method axeReporterEarl
  * @param {Object} param
  */
 function axeReporterEarl({ raw: ruleResults = [], env = {} }) {
+	const axeTypes = [
+		'passes',
+		'incomplete',
+		'inapplicable',
+		'violations'
+	]
+	const outcomeMap = {
+		passes: 'passed',
+		violations: 'failed',
+		incomplete: 'cantTell',
+	}
+
 	const { url, version } = env
 	const graph = []
-
 	ruleResults.forEach(ruleResult => {
 		if (ruleResult.result === 'inapplicable') {
 			graph.push(
@@ -106,7 +105,7 @@ function concatReport(testResults) {
 }
 
 module.exports = {
-	inapplicableFileExtnensions,
+	inapplicableFileExtensions,
 	ignoreRulesIds,
 	axeReporterEarl,
 	earlUntested,

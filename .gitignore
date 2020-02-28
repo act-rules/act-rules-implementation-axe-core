@@ -5,7 +5,7 @@ coverage
 node_modules
 
 # test cases of rules used for testing
-rules-testcases
+testcases
 
 # ignore report.json
 report.json
