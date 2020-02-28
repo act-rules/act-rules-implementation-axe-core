@@ -1,5 +1,4 @@
 const context = require('./context');
-const { ignoreRulesIds, inapplicableFileExtensions } = require('./config')
 
 /**
  * @method axeReporterEarl
@@ -104,8 +103,6 @@ function concatReport(testResults) {
 }
 
 module.exports = {
-	inapplicableFileExtensions,
-	ignoreRulesIds,
 	axeReporterEarl,
 	earlUntested,
 	concatReport,
