@@ -4,7 +4,7 @@ const { AxePuppeteer } = require('axe-puppeteer')
 const { axeReporterEarl, earlUntested } = require('./axe-reporter-earl')
 const axe = require('axe-core')
 const axeSource = readFileSync(require.resolve('axe-core'), 'utf-8')
-const { rulesAxeOptions, ignoreRulesIds, inapplicableFileExtensions } = require('./config')
+const { rulesAxeOptions, ignoreRulesIds, inapplicableFileExtensions, manualRulesMapping } = require('./config')
 
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
@@ -21,11 +21,10 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], rule
 		return earlUntested(env)
 	}
 
-	const axeRules = axe.getRules(tags) || []
-	if (!axeRules.length) {
+	const axeRulesIds = getAxeRuleIdsToRun(tags, ruleId)
+	if(!axeRulesIds.length) {
 		return earlUntested(env)
 	}
-
 
 	// Get the page and make sure it loads correctly
 	await page.goto(url, { waitUntil: 'networkidle0' });
@@ -49,7 +48,6 @@ const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], rule
 	async function analyze() {
 		try {
 			let raw
-			const axeRulesIds = axeRules.map(({ ruleId }) => ruleId)
 
 			// check for inapplicable file extensions
 			if (inapplicableFileExtensions.includes(extn)) {
@@ -96,4 +94,18 @@ function getFileExtension(str) {
 	const filename = path.basename(str);
 	const extn = path.extname(filename).slice(1)
 	return extn || ""
+}
+
+/**
+ * Get axe rules to run
+ * @param {Array[]} tags tags
+ * @param {String} ruleId rule id
+ */
+function getAxeRuleIdsToRun(tags, ruleId) {
+	const axeRules = axe.getRules(tags)
+	if (axeRules.length > 0) {
+		return axeRules.map(axeRule => axeRule.ruleId)
+	}
+
+	return manualRulesMapping[ruleId] || []
 }

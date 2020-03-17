@@ -36,8 +36,17 @@ const rulesAxeOptions = {
   }
 }
 
+const manualRulesMapping = {
+  /**
+   * Rule: meta viewport does not prevent zoom
+   * Url: https://act-rules.github.io/rules/b4f0c3
+   */
+  'b4f0c3': ['meta-viewport']
+}
+
 module.exports = {
   ignoreRulesIds,
   inapplicableFileExtensions,
-  rulesAxeOptions
+  rulesAxeOptions,
+  manualRulesMapping
 }
