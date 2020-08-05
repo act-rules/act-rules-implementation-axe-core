@@ -3,7 +3,7 @@ const runTestcases = require("./run-testcases");
 const { concatReport } = require("./axe-reporter-earl");
 
 async function runTestsInPage(program, toolRunner) {
-  const { page, browser } = await puppeteerSetup();
+  const { page, browser } = await startPuppeteer();
   const testResults = await runTestcases(program, testcase => {
     return toolRunner(page, testcase);
   });
@@ -12,7 +12,7 @@ async function runTestsInPage(program, toolRunner) {
   return concatReport(testResults);
 }
 
-async function puppeteerSetup() {
+async function startPuppeteer() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setBypassCSP(true);
