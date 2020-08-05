@@ -7,7 +7,8 @@
 		"build": "echo 'DEPRECATED; use the cli instead' && ./src/cli.js",
 		"test": "jest --coverage",
 		"format": "prettier --write *.{json,md,js} 'src/**/*.{json,md,js}'",
-		"debug": "node src/cli.js --ruleId 674b10 --testsJson ${PWD}'/testcases/testcases.json' --testsDir ${PWD}'/testcases' --siteUrl https://act-rules.github.io"
+		"debug": "node src/cli.js --ruleId 674b10 --testsJson ${PWD}'/testcases/testcases.json' --testsDir ${PWD}'/testcases' --siteUrl https://act-rules.github.io",
+		"lint": "eslint src/**/*.js"
 	},
 	"repository": {
 		"type": "git",
@@ -32,6 +33,8 @@
 		"static-server": "^2.2.1"
 	},
 	"devDependencies": {
+		"eslint": "^7.6.0",
+		"eslint-config-prettier": "^6.11.0",
 		"jest": "^24.8.0",
 		"jest-extended": "^0.11.5",
 		"prettier": "^1.19.1"
