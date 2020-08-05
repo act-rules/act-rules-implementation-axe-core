@@ -7,17 +7,13 @@ const ignoreRulesIds = [
    * Url: https://act-rules.github.io/rules/bc659a
    *  - This is ignored from generating a mapping in axe-core
    */
-  'bc659a'
-]
+  "bc659a"
+];
 
 /**
  * File extensions for which to ignore running `axe`
  */
-const inapplicableFileExtensions = [
-  'js',
-  'xml',
-  'svg'
-]
+const inapplicableFileExtensions = ["js", "xml", "svg"];
 
 /**
  * Specific options/ config to pass to `axe.run` per ruleId
@@ -29,24 +25,24 @@ const rulesAxeOptions = {
    *  - Disable below checks
    *    - `fallbackrole`
    */
-  '674b10': {
+  "674b10": {
     checks: {
-      'fallbackrole': { enabled: false }
+      fallbackrole: { enabled: false }
     }
   }
-}
+};
 
 const manualRulesMapping = {
   /**
    * Rule: meta viewport does not prevent zoom
    * Url: https://act-rules.github.io/rules/b4f0c3
    */
-  'b4f0c3': ['meta-viewport']
-}
+  b4f0c3: ["meta-viewport"]
+};
 
 module.exports = {
   ignoreRulesIds,
   inapplicableFileExtensions,
   rulesAxeOptions,
   manualRulesMapping
-}
+};

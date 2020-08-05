@@ -4,8 +4,5 @@ coverage
 # deps 
 node_modules
 
-# test cases of rules used for testing
-testcases
-
 # ignore report.json
 report.json
