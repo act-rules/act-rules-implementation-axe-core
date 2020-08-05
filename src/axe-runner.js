@@ -9,11 +9,11 @@ const { rulesAxeOptions, ignoreRulesIds, inapplicableFileExtensions, manualRules
 /**
  * Run axe-pupppeteer in a given page, with a success criterion
  */
-const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], ruleId, getSourceUrl }) => {
+const axeRunner = async (page, { url = '', ruleSuccessCriterion: tags = [], ruleId, remoteUrl }) => {
 	// check if running axe should be ignored
 	const extn = getFileExtension(url)
 	const env = {
-		url: getSourceUrl(url),
+		url: remoteUrl,
 		version: axe.version
 	}
 

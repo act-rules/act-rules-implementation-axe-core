@@ -21,17 +21,15 @@ const runRuleTests = async (pageRunner, testcases, port, siteUrl) => {
 		}
 
 		const { ruleId, ruleName, relativePath } = tc
+		const url = `http://127.0.0.1:${port}/${relativePath}`
+		const remoteUrl = getSourceUrl({ siteUrl, url, port })
+
 		const results = await pageRunner({
 			ruleId,
 			ruleName,
-			url: `http://127.0.0.1:${port}/${relativePath}`,
+			url,
+			remoteUrl,
 			ruleSuccessCriterion: tags,
-			getSourceUrl: assertionUrl => {
-				if (!siteUrl) {
-					return assertionUrl
-				}
-				return `${siteUrl}${assertionUrl.slice(assertionUrl.indexOf(`:${port}`) + 5)}`
-			},
 		})
 
 		assert(typeof results === 'object', 'Expected `pageRunner` to return an object')
@@ -71,4 +69,11 @@ function getWcagScs(accReqs) {
  */
 function hasAriaReqs(accReqs) {
 	return Object.keys(accReqs).some(key => key.includes('aria'))
+}
+
+function getSourceUrl ({ siteUrl, url, port }) {
+	if (!siteUrl) {
+		return url
+	}
+	return `${siteUrl}${url.slice(url.indexOf(`:${port}`) + 5)}`
 }
