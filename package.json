@@ -1,45 +1,72 @@
 {
-	"name": "act-rules-implementation-axe-core",
-	"version": "1.0.0",
-	"description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
-	"main": "index.js",
-	"scripts": {
-		"prebuild": "bash ./setup-axe.sh",
-		"build": "node ./src/index.js",
-		"test": "jest --coverage",
-		"format": "prettier --write *.{json,md,js} 'src/**/*.{json,md,js}'",
-		"debug": "node src/index.js --ruleId 674b10 --testsJson ${PWD}'/testcases/testcases.json' --testsDir ${PWD}'/testcases' --siteUrl https://act-rules.github.io"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/act-rules/act-rules-implementation-axe-core.git"
-	},
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/act-rules/act-rules-implementation-axe-core/issues"
-	},
-	"homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme",
-	"dependencies": {
-		"assert": "^2.0.0",
-		"axe-puppeteer": "latest",
-		"commander": "^2.20.3",
-		"puppeteer": "2.1.1",
-		"static-server": "^2.2.1"
-	},
-	"devDependencies": {
-		"jest": "^24.8.0",
-		"jest-extended": "^0.11.5",
-		"prettier": "^1.19.1"
-	},
-	"jest": {
-		"verbose": true,
-		"bail": true,
-		"setupFilesAfterEnv": [
-			"jest-extended"
-		],
-		"testPathIgnorePatterns": [
-			"<rootDir>/src/__tests__/utils.js"
-		]
-	}
+  "name": "act-rules-implementation-axe-core",
+  "version": "1.0.0",
+  "description": "Implementation [report](./report.json) for [ACT Rules](https://github.com/act-rules/act-rules.github.io) test cases validated by [Axe](https://github.com/dequelabs/axe-core).",
+  "main": "src/cli.js",
+  "scripts": {
+    "build": "echo 'DEPRECATED; use the cli instead' && ./src/cli.js",
+    "test": "jest --coverage",
+    "format": "prettier --write *.{json,md,js} 'src/**/*.{json,md,js}'",
+    "debug": "node src/cli.js --ruleId 674b10 --testsJson ${PWD}'/testcases/testcases.json' --testsDir ${PWD}'/testcases' --siteUrl https://act-rules.github.io",
+    "lint": "eslint src/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/act-rules/act-rules-implementation-axe-core.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "act-rules-implementation-axe-core": "./src/cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/act-rules/act-rules-implementation-axe-core/issues"
+  },
+  "homepage": "https://github.com/act-rules/act-rules-implementation-axe-core#readme",
+  "dependencies": {
+    "assert": "^2.0.0",
+    "axe-core": "next",
+    "axe-puppeteer": "latest",
+    "commander": "^6.0.0",
+    "fs-extra": "^9.0.1",
+    "puppeteer": "2.1.1",
+    "static-server": "^2.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "husky": "^4.2.5",
+    "jest": "^24.8.0",
+    "jest-extended": "^0.11.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^1.19.1"
+  },
+  "jest": {
+    "verbose": true,
+    "bail": true,
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/src/__tests__/utils.js"
+    ]
+  },
+  "prettier": {
+    "trailingComma": "none"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{html,js,jsx,json,md,scss,yml}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
 }
