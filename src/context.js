@@ -8,7 +8,7 @@ const context = {
   sch: "https://schema.org/",
   source: "dct:source",
   title: "dct:title",
-  // Bug in the WCAG-EM Report Tool, this should have maped to earl:test
+  // Bug in the WCAG-EM Report Tool, this should have mapped to earl:test
   EMTest: "http://www.w3.org/TR/WCAG-EM/#testcase",
   assertedBy: { "@type": "@id" },
   outcome: { "@type": "@id" },
